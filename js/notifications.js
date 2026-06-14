@@ -1,11 +1,12 @@
 /**
  * NOTIFICATION SYSTEM
- * Display notifications to user
  */
 
 class Notification {
     static show(message, type = 'info', duration = 3000) {
         const container = document.getElementById('notifications-container');
+        if (!container) return;
+        
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         notification.innerHTML = `
@@ -15,13 +16,11 @@ class Notification {
         
         container.appendChild(notification);
         
-        // Auto remove
         const timeout = setTimeout(() => {
             notification.classList.add('notification-removing');
             setTimeout(() => notification.remove(), 300);
         }, duration);
         
-        // Close button
         notification.querySelector('.notification-close').addEventListener('click', () => {
             clearTimeout(timeout);
             notification.classList.add('notification-removing');
@@ -46,9 +45,7 @@ class Notification {
     }
 }
 
-// Add notification styles
-const style = document.createElement('style');
-style.textContent = `
+const styles = `
     .notifications-container {
         position: fixed;
         top: 80px;
@@ -93,10 +90,6 @@ style.textContent = `
         background: rgba(0, 153, 255, 0.1);
     }
     
-    .notification-message {
-        flex: 1;
-    }
-    
     .notification-close {
         background: none;
         border: none;
@@ -111,25 +104,16 @@ style.textContent = `
     }
     
     @keyframes slideInRight {
-        from {
-            opacity: 0;
-            transform: translateX(100px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
+        from { opacity: 0; transform: translateX(100px); }
+        to { opacity: 1; transform: translateX(0); }
     }
     
     @keyframes slideOutRight {
-        from {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateX(100px);
-        }
+        from { opacity: 1; transform: translateX(0); }
+        to { opacity: 0; transform: translateX(100px); }
     }
 `;
-document.head.appendChild(style);
+
+const styleEl = document.createElement('style');
+styleEl.textContent = styles;
+if (document.head) document.head.appendChild(styleEl);

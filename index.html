@@ -8,7 +8,6 @@
     <!-- External Libraries for Real Recognition -->
     <script async src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script async src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection"></script>
-    <script async src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"></script>
     <script async src="https://webgazer.cs.brown.edu/webgazer.js"></script>
     
     <!-- Stylesheets -->
@@ -197,19 +196,7 @@
             </aside>
 
             <!-- MAIN PANELS -->
-            <main class="main-panels">
-                <!-- Dashboard, Facial, Voice, Gestures, Eye Tracking, Users, History, Statistics, Terminal, Settings panels will be loaded here -->
-                <div id="dashboard" class="panel active"></div>
-                <div id="facial" class="panel"></div>
-                <div id="voice" class="panel"></div>
-                <div id="gestures" class="panel"></div>
-                <div id="eye-tracking" class="panel"></div>
-                <div id="users" class="panel"></div>
-                <div id="history" class="panel"></div>
-                <div id="statistics" class="panel"></div>
-                <div id="terminal" class="panel"></div>
-                <div id="settings" class="panel"></div>
-            </main>
+            <main class="main-panels" id="main-panels"></main>
         </div>
     </div>
 

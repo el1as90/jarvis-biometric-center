@@ -1,0 +1,65 @@
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.status-card {
+    background: rgba(0, 255, 200, 0.05);
+    border: 1px solid rgba(0, 255, 200, 0.2);
+    border-radius: 4px;
+    padding: 20px;
+    display: flex;
+    gap: 15px;
+    transition: all 0.3s;
+}
+
+.status-card:hover {
+    background: rgba(0, 255, 200, 0.1);
+    border-color: rgba(0, 255, 200, 0.4);
+    box-shadow: 0 0 15px rgba(0, 255, 200, 0.2);
+}
+
+.card-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: rgba(0, 255, 200, 0.1);
+}
+
+.card-icon svg {
+    width: 30px;
+    height: 30px;
+    color: #00ffc8;
+}
+
+.card-content h3 {
+    font-size: 0.9rem;
+    color: #00ffc8;
+    margin-bottom: 5px;
+}
+
+.status-text {
+    font-size: 0.85rem;
+    color: #0099ff;
+    margin-bottom: 10px;
+}
+
+.status-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 255, 200, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.status-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00ffc8, #0099ff);
+    width: 0%;
+    transition: width 0.5s;
+}
