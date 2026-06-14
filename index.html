@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS BIOMETRIC CENTER - Advanced Biometric Recognition System</title>
+    
+    <!-- External Libraries for Real Recognition -->
+    <script async src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script async src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection"></script>
+    <script async src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"></script>
+    <script async src="https://webgazer.cs.brown.edu/webgazer.js"></script>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <link rel="stylesheet" href="styles/modules.css">
+    <link rel="stylesheet" href="styles/hud.css">
+    <link rel="stylesheet" href="styles/animations.css">
+</head>
+<body>
+    <!-- STARTUP SCREEN -->
+    <div id="startup-screen" class="startup-container">
+        <div class="startup-content">
+            <div class="startup-logo">
+                <div class="logo-circle">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(0, 255, 200, 0.3)" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="35" fill="none" stroke="rgba(0, 255, 200, 0.5)" stroke-width="1"/>
+                        <path d="M 50 20 L 60 40 L 50 35 L 40 40 Z" fill="rgb(0, 255, 200)"/>
+                        <text x="50" y="75" font-size="20" text-anchor="middle" fill="rgb(0, 255, 200)" font-family="monospace" font-weight="bold">J</text>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="startup-text">
+                <h1>JARVIS</h1>
+                <h2>BIOMETRIC CENTER</h2>
+            </div>
+            
+            <div class="startup-sequence" id="startup-sequence">
+                <div class="sequence-line">
+                    <span class="sequence-label">INITIALIZING SYSTEM...</span>
+                    <span class="sequence-percent">0%</span>
+                </div>
+                <div class="sequence-line delay-1">
+                    <span class="sequence-label">LOADING MODULES...</span>
+                    <span class="sequence-percent">0%</span>
+                </div>
+                <div class="sequence-line delay-2">
+                    <span class="sequence-label">CONNECTING DEVICES...</span>
+                    <span class="sequence-percent">0%</span>
+                </div>
+                <div class="sequence-line delay-3">
+                    <span class="sequence-label">ACTIVATING SENSORS...</span>
+                    <span class="sequence-percent">0%</span>
+                </div>
+                <div class="sequence-line delay-4">
+                    <span class="sequence-label">CALIBRATING BIOMETRICS...</span>
+                    <span class="sequence-percent">0%</span>
+                </div>
+            </div>
+            
+            <div class="startup-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="startup-progress-fill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="overall-percent">0%</span>
+                </div>
+            </div>
+            
+            <div class="startup-status" id="startup-status">
+                Initializing..
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APPLICATION -->
+    <div id="main-app" class="main-container hidden">
+        <!-- TOP BAR -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <div class="system-logo">
+                    <div class="logo-mini">J</div>
+                </div>
+                <div class="system-title">
+                    <h1>JARVIS</h1>
+                    <span class="subtitle">BIOMETRIC IDENTIFICATION SYSTEM</span>
+                </div>
+            </div>
+            
+            <div class="top-bar-center">
+                <div class="system-time">
+                    <span id="system-time">00:00:00</span>
+                </div>
+                <div class="system-date">
+                    <span id="system-date">LOADING...</span>
+                </div>
+            </div>
+            
+            <div class="top-bar-right">
+                <div class="system-status">
+                    <div class="status-indicator online"></div>
+                    <span>ONLINE</span>
+                </div>
+                <button id="fullscreen-btn" class="icon-btn" title="Fullscreen">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                    </svg>
+                </button>
+                <button id="settings-btn" class="icon-btn" title="Settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m2.12 2.12l4.24 4.24M1 12h6m6 0h6m-17.78 7.78l4.24-4.24m2.12-2.12l4.24-4.24"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <div class="content-wrapper">
+            <!-- SIDEBAR NAVIGATION -->
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <button class="nav-item active" data-panel="dashboard" title="Dashboard">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                        <span>DASHBOARD</span>
+                    </button>
+                    
+                    <button class="nav-item" data-panel="facial" title="Facial Recognition">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><circle cx="9" cy="9" r="1.5" fill="currentColor"/><circle cx="15" cy="9" r="1.5" fill="currentColor"/><path d="M8 14c1 1 2.5 2 4 2s3-1 4-2"/>
+                        </svg>
+                        <span>FACIAL</span>
+                    </button>
+                    
+                    <button class="nav-item" data-panel="voice" title="Voice Recognition">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2s2-.9 2-2V4c0-1.1-.9-2-2-2z"/><path d="M17 16.5c0 2.5-1.75 4.7-4 5.3V22h-2v-.2c-2.25-.6-4-2.8-4-5.3H6a5 5 0 0010 0z"/>
+                        </svg>
+                        <span>VOICE</span>
+                    </button>
+                    
+                    <button class="nav-item" data-panel="gestures" title="Gesture Recognition">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 3c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h1v4l3-3h3c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H9z"/>
+                        </svg>
+                        <span>GESTURES</span>
+                    </button>
+                    
+                    <button class="nav-item" data-panel="eye-tracking" title="Eye Tracking">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" fill="currentColor"/>
+                        </svg>
+                        <span>EYE TRACKING</span>
+                    </button>
+                    
+                    <button class="nav-item" data-panel="users" title="User Management">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <span>USERS</span>
+                    </button>
+                    
+                    <button class="nav-item" data-panel="history" title="Event History">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <span>HISTORY</span>
+                    </button>
+                    
+                    <button class="nav-item" data-panel="statistics" title="Statistics">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                        <span>STATISTICS</span>
+                    </button>
+                    
+                    <button class="nav-item" data-panel="terminal" title="System Terminal">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+                        </svg>
+                        <span>TERMINAL</span>
+                    </button>
+                </nav>
+                
+                <div class="sidebar-footer">
+                    <button class="nav-item" data-panel="settings" title="Settings">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m2.12 2.12l4.24 4.24M1 12h6m6 0h6m-17.78 7.78l4.24-4.24m2.12-2.12l4.24-4.24"/>
+                        </svg>
+                        <span>SETTINGS</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- MAIN PANELS -->
+            <main class="main-panels">
+                <!-- Dashboard, Facial, Voice, Gestures, Eye Tracking, Users, History, Statistics, Terminal, Settings panels will be loaded here -->
+                <div id="dashboard" class="panel active"></div>
+                <div id="facial" class="panel"></div>
+                <div id="voice" class="panel"></div>
+                <div id="gestures" class="panel"></div>
+                <div id="eye-tracking" class="panel"></div>
+                <div id="users" class="panel"></div>
+                <div id="history" class="panel"></div>
+                <div id="statistics" class="panel"></div>
+                <div id="terminal" class="panel"></div>
+                <div id="settings" class="panel"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION SYSTEM -->
+    <div id="notifications-container" class="notifications-container"></div>
+
+    <!-- MODAL DIALOGS -->
+    <div id="modal-backdrop" class="modal-backdrop hidden"></div>
+    
+    <div id="register-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>REGISTER NEW USER</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="register-name">Full Name</label>
+                    <input type="text" id="register-name" placeholder="Enter user name" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label>Facial Recognition Capture</label>
+                    <div class="capture-box">
+                        <video id="register-video" width="300" height="225" playsinline></video>
+                        <canvas id="register-canvas" width="300" height="225" style="display:none;"></canvas>
+                        <button id="capture-photo-btn" class="action-btn" type="button">CAPTURE PHOTO</button>
+                    </div>
+                    <div id="photo-preview" class="photo-preview hidden">
+                        <img id="captured-photo" src="" alt="Captured photo">
+                        <button id="recapture-btn" class="action-btn" type="button">RECAPTURE</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button id="save-user-btn" class="action-btn" type="button">SAVE USER</button>
+                <button id="cancel-register-btn" class="action-btn secondary" type="button">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CORE SCRIPTS - Load in correct order -->
+    <script src="js/config.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/logger.js"></script>
+    <script src="js/notifications.js"></script>
+    
+    <!-- MODULE SCRIPTS -->
+    <script src="js/modules/audio-context.js"></script>
+    <script src="js/modules/camera.js"></script>
+    <script src="js/modules/facial-recognition.js"></script>
+    <script src="js/modules/voice-recognition.js"></script>
+    <script src="js/modules/gesture-recognition.js"></script>
+    <script src="js/modules/eye-tracking.js"></script>
+    
+    <!-- UI SCRIPTS -->
+    <script src="js/ui/panels.js"></script>
+    <script src="js/ui/hud.js"></script>
+    <script src="js/ui/terminal.js"></script>
+    <script src="js/ui/dashboard.js"></script>
+    <script src="js/ui/charts.js"></script>
+    
+    <!-- SYSTEM SCRIPTS -->
+    <script src="js/system/startup.js"></script>
+    <script src="js/system/system-manager.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
